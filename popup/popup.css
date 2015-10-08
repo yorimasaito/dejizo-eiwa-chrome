@@ -1,0 +1,57 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: verdana, arial, helvetica, sans-serif;
+  width: 360px;
+}
+
+header {
+  background-color: #f8f8f8;
+  border-bottom: solid 1px #e7e7e7;
+  height: 30px;
+}
+
+header p {
+  color: #777;
+  height: 30px;
+  font-size: 20px;
+  margin-left: 10px;
+  display: table-cell;
+  vertical-align: middle;
+}
+
+#content {
+  margin: 10px;
+}
+
+#lookup {
+  margin-bottom: 10px;
+}
+
+#searchWordForm {
+  font-size: 14px;
+}
+
+#searchButton {
+  background-color: #5bc0de;
+  border-color: #46b8da;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 14px;
+  height: 30px;
+  line-height: 20px;
+  margin-left: 10px;
+  padding: 5px;
+  text-align: center;
+  width: 70px;
+}
+
+#searchButton:hover {
+  background-color: #31b0d5;
+  border-color: #269abc;
+}
