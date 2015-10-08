@@ -15,8 +15,12 @@ header {
 }
 
 header p {
+  color: #777;
   height: 30px;
-  line-height: 20px;
+  font-size: 20px;
+  margin-left: 10px;
+  display: table-cell;
+  vertical-align: middle;
 }
 
 #content {
@@ -25,6 +29,10 @@ header p {
 
 #lookup {
   margin-bottom: 10px;
+}
+
+#searchWordForm {
+  font-size: 14px;
 }
 
 #searchButton {
