@@ -19,8 +19,12 @@ header p {
   line-height: 20px;
 }
 
+#content {
+  margin: 10px;
+}
+
 #lookup {
-  margin: 10px 0 0 10px;
+  margin-bottom: 10px;
 }
 
 #searchButton {
@@ -39,6 +43,7 @@ header p {
   width: 70px;
 }
 
-#resultDisplay {
-  margin: 10px 0 0 10px;
+#searchButton:hover {
+  background-color: #31b0d5;
+  border-color: #269abc;
 }
