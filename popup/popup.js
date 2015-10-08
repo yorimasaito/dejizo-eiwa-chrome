@@ -1,10 +1,11 @@
-var xhr = new XMLHttpRequest();
 var resultDisplay = null;
 var MAX_RESULT_WORDS = 5;
 
 function getResultBodies(xmlData) {
 
     function getBodyFromId(itemId) {
+        var xhr = new XMLHttpRequest();
+
         itemId = encodeURIComponent(itemId);
         var params = 'Dic=EJdict' +
                      '&Item=' + itemId +
@@ -19,8 +20,8 @@ function getResultBodies(xmlData) {
                 if (xhr.status == 200) {
                     var dom = xhr.responseXML;
                     var body = dom.getElementsByTagName('Body');
-                    resultDisplay.innerHTML = body[0].innerHTML;
-                    return body[0].innerHTML;
+                    var res = body[0].innerHTML;
+                    resultDisplay.innerHTML = res;
                 } else {
                     return xhr.statusText;
                 }
@@ -33,25 +34,14 @@ function getResultBodies(xmlData) {
 
     var resultBodies = [];
     for (var i = 0; i < ids.length; i++) {
-        resultBodies[i] = getBodyFromId(ids[i].childNodes[0].nodeValue);
+        getBodyFromId(ids[i].childNodes[0].nodeValue);
     }
-
-    return resultBodies;
-}
-
-function genPrettyLists(elements) {
-    var resHTML = '<ul>';
-    for (var i = 0; i < elements.length; i++) {
-        var item = '<li>' + elements[i].innerHTML + '</li>';
-        resHTML += item;
-    }
-    resHTML += '</ul>';
-    return resHTML;
 }
 
 function lookupWords() {
     // Cancel the form submit
     event.preventDefault();
+    var xhr = new XMLHttpRequest();
 
     var word = encodeURIComponent(document.getElementById('searchWordForm').value);
 
@@ -72,8 +62,7 @@ function lookupWords() {
         if (xhr.readyState == 4) {
             resultDisplay.innerHTML = '';
             if (xhr.status == 200) {
-                var meaningDivs = getResultBodies(xhr.responseXML);
-                resultDisplay.innerHTML = genPrettyLists(meaningDivs);
+                getResultBodies(xhr.responseXML);
             } else {
                 resultDisplay.innerHTML = xhr.statusText;
             }
