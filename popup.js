@@ -53,7 +53,7 @@ function lookupWords() {
     // Cancel the form submit
     event.preventDefault();
 
-    var word = encodeURIComponent(document.getElementById('searchWord').value);
+    var word = encodeURIComponent(document.getElementById('searchWordForm').value);
 
     var getUrl = 'http://public.dejizo.jp/NetDicV09.asmx/SearchDicItemLite';
 
