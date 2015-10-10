@@ -1,4 +1,5 @@
 var resultDisplay = null;
+var searchWord;
 var MAX_RESULT_WORDS = 5;
 
 function getResultBodies(xmlData) {
@@ -19,9 +20,10 @@ function getResultBodies(xmlData) {
             if (xhr.readyState == 4) {
                 if (xhr.status == 200) {
                     var dom = xhr.responseXML;
+                    var head = dom.getElementsByTagName('Head');
                     var body = dom.getElementsByTagName('Body');
-                    var res = body[0].innerHTML;
-                    resultDisplay.innerHTML = res;
+                    var res = head[0].innerHTML + body[0].innerHTML;
+                    resultDisplay.innerHTML += res;
                 } else {
                     return xhr.statusText;
                 }
@@ -31,26 +33,30 @@ function getResultBodies(xmlData) {
     }
 
     var ids = xmlData.getElementsByTagName('ItemID');
-
-    var resultBodies = [];
-    for (var i = 0; i < ids.length; i++) {
-        getBodyFromId(ids[i].childNodes[0].nodeValue);
+    if (ids.length == 0) {
+        var message = searchWord + ' に一致する情報は見つかりませんでした.';
+        resultDisplay.innerHTML = message;
+    } else {
+        var resultBodies = [];
+        for (var i = 0; i < ids.length; i++) {
+            getBodyFromId(ids[i].childNodes[0].nodeValue);
+        }
     }
 }
 
-function lookupWords() {
+function lookupWord() {
     // Cancel the form submit
     event.preventDefault();
     var xhr = new XMLHttpRequest();
 
-    var word = encodeURIComponent(document.getElementById('searchWordForm').value);
+    searchWord = encodeURIComponent(document.getElementById('searchWordForm').value);
 
     var getUrl = 'http://public.dejizo.jp/NetDicV09.asmx/SearchDicItemLite';
 
     var params = 'Dic=EJdict&' +
-                 'Word=' + word +
+                 'Word=' + searchWord +
                  '&Scope=HEADWORD' +
-                 '&Match=EXACT' +
+                 '&Match=CONTAIN' +
                  '&Merge=AND' +
                  '&Prof=XHTML' +
                  '&PageSize=' + MAX_RESULT_WORDS +
@@ -74,5 +80,5 @@ function lookupWords() {
 
 window.addEventListener('load', function(event) {
     resultDisplay = document.getElementById('resultDisplay');
-    document.getElementById('lookup').addEventListener('submit', lookupWords);
+    document.getElementById('lookup').addEventListener('submit', lookupWord);
 });

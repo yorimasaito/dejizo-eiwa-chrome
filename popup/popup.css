@@ -18,17 +18,13 @@ header p {
   color: #777;
   height: 30px;
   font-size: 20px;
-  margin-left: 10px;
+  padding-left: 10px;
   display: table-cell;
   vertical-align: middle;
 }
 
 #content {
   margin: 10px;
-}
-
-#lookup {
-  margin-bottom: 10px;
 }
 
 #searchWordForm {
@@ -54,4 +50,12 @@ header p {
 #searchButton:hover {
   background-color: #31b0d5;
   border-color: #269abc;
+}
+
+.NetDicHead {
+  margin-top: 10px;
+}
+
+.NetDicBody {
+  margin-left: 10px;
 }
