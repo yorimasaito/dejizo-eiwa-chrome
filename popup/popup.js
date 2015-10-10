@@ -19,8 +19,9 @@ function getResultBodies(xmlData) {
             if (xhr.readyState == 4) {
                 if (xhr.status == 200) {
                     var dom = xhr.responseXML;
+                    var head = dom.getElementsByTagName('Head');
                     var body = dom.getElementsByTagName('Body');
-                    var res = body[0].innerHTML;
+                    var res = head[0].innerHTML + body[0].innerHTML;
                     resultDisplay.innerHTML += res;
                 } else {
                     return xhr.statusText;
