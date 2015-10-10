@@ -1,4 +1,5 @@
 var resultDisplay = null;
+var searchWord;
 var MAX_RESULT_WORDS = 5;
 
 function getResultBodies(xmlData) {
@@ -32,10 +33,14 @@ function getResultBodies(xmlData) {
     }
 
     var ids = xmlData.getElementsByTagName('ItemID');
-
-    var resultBodies = [];
-    for (var i = 0; i < ids.length; i++) {
-        getBodyFromId(ids[i].childNodes[0].nodeValue);
+    if (ids.length == 0) {
+        var message = searchWord + ' に一致する情報は見つかりませんでした.';
+        resultDisplay.innerHTML = message;
+    } else {
+        var resultBodies = [];
+        for (var i = 0; i < ids.length; i++) {
+            getBodyFromId(ids[i].childNodes[0].nodeValue);
+        }
     }
 }
 
@@ -44,12 +49,12 @@ function lookupWord() {
     event.preventDefault();
     var xhr = new XMLHttpRequest();
 
-    var word = encodeURIComponent(document.getElementById('searchWordForm').value);
+    searchWord = encodeURIComponent(document.getElementById('searchWordForm').value);
 
     var getUrl = 'http://public.dejizo.jp/NetDicV09.asmx/SearchDicItemLite';
 
     var params = 'Dic=EJdict&' +
-                 'Word=' + word +
+                 'Word=' + searchWord +
                  '&Scope=HEADWORD' +
                  '&Match=CONTAIN' +
                  '&Merge=AND' +
