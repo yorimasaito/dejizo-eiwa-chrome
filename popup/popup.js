@@ -21,7 +21,7 @@ function getResultBodies(xmlData) {
                     var dom = xhr.responseXML;
                     var body = dom.getElementsByTagName('Body');
                     var res = body[0].innerHTML;
-                    resultDisplay.innerHTML = res;
+                    resultDisplay.innerHTML += res;
                 } else {
                     return xhr.statusText;
                 }
@@ -38,7 +38,7 @@ function getResultBodies(xmlData) {
     }
 }
 
-function lookupWords() {
+function lookupWord() {
     // Cancel the form submit
     event.preventDefault();
     var xhr = new XMLHttpRequest();
@@ -50,7 +50,7 @@ function lookupWords() {
     var params = 'Dic=EJdict&' +
                  'Word=' + word +
                  '&Scope=HEADWORD' +
-                 '&Match=EXACT' +
+                 '&Match=CONTAIN' +
                  '&Merge=AND' +
                  '&Prof=XHTML' +
                  '&PageSize=' + MAX_RESULT_WORDS +
@@ -74,5 +74,5 @@ function lookupWords() {
 
 window.addEventListener('load', function(event) {
     resultDisplay = document.getElementById('resultDisplay');
-    document.getElementById('lookup').addEventListener('submit', lookupWords);
+    document.getElementById('lookup').addEventListener('submit', lookupWord);
 });
