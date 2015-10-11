@@ -2,9 +2,9 @@ var resultDisplay = null;
 var searchWord;
 var MAX_RESULT_WORDS = 5;
 
-function getResultBodies(xmlData) {
+function showResultBodies(xmlData) {
 
-    function getBodyFromId(itemId) {
+    function showBodyFromId(itemId) {
         var xhr = new XMLHttpRequest();
 
         itemId = encodeURIComponent(itemId);
@@ -17,16 +17,14 @@ function getResultBodies(xmlData) {
         xhr.open('GET', getUrl + '?' + params, true);
         xhr.onreadystatechange = function() {
             // if the request completed
-            if (xhr.readyState == 4) {
-                if (xhr.status == 200) {
-                    var dom = xhr.responseXML;
-                    var head = dom.getElementsByTagName('Head');
-                    var body = dom.getElementsByTagName('Body');
-                    var res = head[0].innerHTML + body[0].innerHTML;
-                    resultDisplay.innerHTML += res;
-                } else {
-                    return xhr.statusText;
-                }
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                var dom = xhr.responseXML;
+                var head = dom.getElementsByTagName('Head');
+                var body = dom.getElementsByTagName('Body');
+                var res = head[0].innerHTML + body[0].innerHTML;
+                resultDisplay.innerHTML += res;
+            } else {
+                return xhr.statusText;
             }
         };
         xhr.send(null);
@@ -39,7 +37,7 @@ function getResultBodies(xmlData) {
     } else {
         var resultBodies = [];
         for (var i = 0; i < ids.length; i++) {
-            getBodyFromId(ids[i].childNodes[0].nodeValue);
+            showBodyFromId(ids[i].childNodes[0].nodeValue);
         }
     }
 }
@@ -68,7 +66,7 @@ function lookupWord() {
         if (xhr.readyState == 4) {
             resultDisplay.innerHTML = '';
             if (xhr.status == 200) {
-                getResultBodies(xhr.responseXML);
+                showResultBodies(xhr.responseXML);
             } else {
                 resultDisplay.innerHTML = xhr.statusText;
             }
