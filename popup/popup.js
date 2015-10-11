@@ -56,7 +56,7 @@ function lookupWord() {
     var params = 'Dic=EJdict&' +
                  'Word=' + searchWord +
                  '&Scope=HEADWORD' +
-                 '&Match=CONTAIN' +
+                 '&Match=EXACT' +
                  '&Merge=AND' +
                  '&Prof=XHTML' +
                  '&PageSize=' + MAX_RESULT_WORDS +
