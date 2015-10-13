@@ -2,7 +2,7 @@ var resultDisplay = null;
 var searchWord;
 var MAX_RESULT_WORDS = 5;
 
-function getBodyFromId(itemId, callback) {
+function getResultFromId(itemId, passResultCallback) {
     var xhr = new XMLHttpRequest();
 
     itemId = encodeURIComponent(itemId);
@@ -21,29 +21,29 @@ function getBodyFromId(itemId, callback) {
                 var head = dom.getElementsByTagName('Head');
                 var body = dom.getElementsByTagName('Body');
                 var res = head[0].innerHTML + body[0].innerHTML;
-                callback(res);
+                passResultCallback(res);
             } else {
-            callback(xhr.status);
+                passResultCallback(xhr.status);
             }
         }
     };
     xhr.send(null);
 }
 
-function getResultBodies(xmlData, showResult) {
+function getSearchResult(xmlData, showResultCallback) {
     var ids = xmlData.getElementsByTagName('ItemID');
     var ids_length = ids.length;
     if (ids_length == 0) {
         var message = searchWord + ' に一致する情報は見つかりませんでした.';
-        showResult(message);
+        showResultCallback(message);
     } else if (ids_length == 1){
-        getBodyFromId(ids[0].childNodes[0].nodeValue, function(resHTML){
-            showResult(resHTML);
+        getResultFromId(ids[0].childNodes[0].nodeValue, function(resHTML){
+            showResultCallback(resHTML);
         });
     } else {
         for(var i = 0; i < ids_length; i++) {
-            getBodyFromId(ids[i].childNodes[0].nodeValue, function(resHTML){
-                showResult(resHTML);
+            getResultFromId(ids[i].childNodes[0].nodeValue, function(resHTML){
+                showResultCallback(resHTML);
             });
         }
     }
@@ -72,7 +72,8 @@ function lookupWord() {
         if (xhr.readyState == 4) {
             resultDisplay.innerHTML = '';
             if (xhr.status == 200) {
-                getResultBodies(xhr.responseXML, function(responseHTML){
+                // responseXMLは返す単語のIDを持っている
+                getSearchResult(xhr.responseXML, function(responseHTML){
                     resultDisplay.innerHTML += responseHTML;
                 });
             } else {
