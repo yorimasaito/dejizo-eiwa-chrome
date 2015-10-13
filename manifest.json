@@ -1,9 +1,9 @@
 {
     "name": "Dejizo Eiwa Chrome",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "manifest_version": 2,
     "author": "tanishiking",
-    "description": "デ地蔵REST APIから英和辞書検索をするための拡張機能",
+    "description": "英和辞書検索を簡単にするための拡張機能 この拡張機能には デ辞蔵REST版APIを利用しています.",
     "icons": {
         "16": "./images/icon16.png",
         "48": "./images/icon48.png",
