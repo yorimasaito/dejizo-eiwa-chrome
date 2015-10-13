@@ -9,6 +9,7 @@
 ## 概要
 Dejizo Eiwa Chrome は 新しいタブなどを開くことなく ポップアップ上で英和辞書検索を可能にする拡張機能です.
 英単語を英和辞書検索するためには 右上に表示される Dejizo Eiwa Chrome のアイコンをクリックし 調べたい英単語をフォームに入力して Enter キーを押すだけです.
+[![Gyazo](https://i.gyazo.com/890fb4760961e98d16b9a4f96d5578f4.png)](https://gyazo.com/890fb4760961e98d16b9a4f96d5578f4)
 
 ### 注意
 この拡張機能のバックエンドには [デ辞蔵 REST版API](https://dejizo.jp/dev/rest.html) の無償公開版を利用しています.
