@@ -1,6 +1,6 @@
 {
     "name": "Dejizo Eiwa Chrome",
-    "version": "1.0",
+    "version": "1.0.2",
     "manifest_version": 2,
     "author": "tanishiking",
     "description": "デ地蔵REST APIから英和辞書検索をするための拡張機能",
@@ -15,11 +15,11 @@
             "38": "./images/icon38.png"
         },
         "default_title": "Dejizo Waei Chrome",
-        "default_popup": "popup/popup.html"
+        "default_popup": "./popup/popup.html"
     },
     "permissions": [
-        "http://*/*",
-        "https://*/*"
+        "http://public.dejizo.jp/NetDicV09.asmx/*"
     ]
+
 }
 
