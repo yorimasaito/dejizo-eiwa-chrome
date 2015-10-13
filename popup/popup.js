@@ -2,44 +2,49 @@ var resultDisplay = null;
 var searchWord;
 var MAX_RESULT_WORDS = 5;
 
-function getResultBodies(xmlData) {
+function getResultFromId(itemId, passResultCallback) {
+    var xhr = new XMLHttpRequest();
 
-    function getBodyFromId(itemId) {
-        var xhr = new XMLHttpRequest();
+    itemId = encodeURIComponent(itemId);
+    var params = 'Dic=EJdict' +
+                 '&Item=' + itemId +
+                 '&Loc=' +
+                 '&Prof=XHTML';
 
-        itemId = encodeURIComponent(itemId);
-        var params = 'Dic=EJdict' +
-                     '&Item=' + itemId +
-                     '&Loc=' +
-                     '&Prof=XHTML';
-
-        var getUrl = 'http://public.dejizo.jp/NetDicV09.asmx/GetDicItemLite';
-        xhr.open('GET', getUrl + '?' + params, true);
-        xhr.onreadystatechange = function() {
-            // if the request completed
-            if (xhr.readyState == 4) {
-                if (xhr.status == 200) {
-                    var dom = xhr.responseXML;
-                    var head = dom.getElementsByTagName('Head');
-                    var body = dom.getElementsByTagName('Body');
-                    var res = head[0].innerHTML + body[0].innerHTML;
-                    resultDisplay.innerHTML += res;
-                } else {
-                    return xhr.statusText;
-                }
+    var getUrl = 'http://public.dejizo.jp/NetDicV09.asmx/GetDicItemLite';
+    xhr.open('GET', getUrl + '?' + params, true);
+    xhr.onreadystatechange = function() {
+        // if the request completed
+        if (xhr.readyState == 4) {
+            if(xhr.status == 200) {
+                var dom = xhr.responseXML;
+                var head = dom.getElementsByTagName('Head');
+                var body = dom.getElementsByTagName('Body');
+                var res = head[0].innerHTML + body[0].innerHTML;
+                passResultCallback(res);
+            } else {
+                passResultCallback(xhr.status);
             }
-        };
-        xhr.send(null);
-    }
+        }
+    };
+    xhr.send(null);
+}
 
+function getSearchResult(xmlData, showResultCallback) {
     var ids = xmlData.getElementsByTagName('ItemID');
-    if (ids.length == 0) {
+    var ids_length = ids.length;
+    if (ids_length == 0) {
         var message = searchWord + ' に一致する情報は見つかりませんでした.';
-        resultDisplay.innerHTML = message;
+        showResultCallback(message);
+    } else if (ids_length == 1){
+        getResultFromId(ids[0].childNodes[0].nodeValue, function(resHTML){
+            showResultCallback(resHTML);
+        });
     } else {
-        var resultBodies = [];
-        for (var i = 0; i < ids.length; i++) {
-            getBodyFromId(ids[i].childNodes[0].nodeValue);
+        for(var i = 0; i < ids_length; i++) {
+            getResultFromId(ids[i].childNodes[0].nodeValue, function(resHTML){
+                showResultCallback(resHTML);
+            });
         }
     }
 }
@@ -52,11 +57,10 @@ function lookupWord() {
     searchWord = encodeURIComponent(document.getElementById('searchWordForm').value);
 
     var getUrl = 'http://public.dejizo.jp/NetDicV09.asmx/SearchDicItemLite';
-
     var params = 'Dic=EJdict&' +
                  'Word=' + searchWord +
                  '&Scope=HEADWORD' +
-                 '&Match=CONTAIN' +
+                 '&Match=EXACT' +
                  '&Merge=AND' +
                  '&Prof=XHTML' +
                  '&PageSize=' + MAX_RESULT_WORDS +
@@ -68,13 +72,15 @@ function lookupWord() {
         if (xhr.readyState == 4) {
             resultDisplay.innerHTML = '';
             if (xhr.status == 200) {
-                getResultBodies(xhr.responseXML);
+                // responseXMLは返す単語のIDを持っている
+                getSearchResult(xhr.responseXML, function(responseHTML){
+                    resultDisplay.innerHTML += responseHTML;
+                });
             } else {
                 resultDisplay.innerHTML = xhr.statusText;
             }
         }
     };
-
     xhr.send(null);
 }
 
