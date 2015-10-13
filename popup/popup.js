@@ -15,14 +15,16 @@ function getBodyFromId(itemId, callback) {
     xhr.open('GET', getUrl + '?' + params, true);
     xhr.onreadystatechange = function() {
         // if the request completed
-        if (xhr.readyState == 4 && xhr.status == 200) {
-            var dom = xhr.responseXML;
-            var head = dom.getElementsByTagName('Head');
-            var body = dom.getElementsByTagName('Body');
-            var res = head[0].innerHTML + body[0].innerHTML;
-            callback(res);
-        } else {
-            callback(xhr.statusText);
+        if (xhr.readyState == 4) {
+            if(xhr.status == 200) {
+                var dom = xhr.responseXML;
+                var head = dom.getElementsByTagName('Head');
+                var body = dom.getElementsByTagName('Body');
+                var res = head[0].innerHTML + body[0].innerHTML;
+                callback(res);
+            } else {
+            callback(xhr.status);
+            }
         }
     };
     xhr.send(null);
