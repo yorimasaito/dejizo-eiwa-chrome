@@ -1,8 +1,9 @@
 {
-    "name": "eiwa-chrome",
-    "version": "0.0.1",
+    "name": "Dejizo Eiwa Chrome",
+    "version": "1.0.2",
     "manifest_version": 2,
-    "description": "デ地蔵APIからシュッと英和辞書検索をする拡張機能",
+    "author": "tanishiking",
+    "description": "デ地蔵REST APIから英和辞書検索をするための拡張機能",
     "icons": {
         "16": "./images/icon16.png",
         "48": "./images/icon48.png",
@@ -14,11 +15,11 @@
             "38": "./images/icon38.png"
         },
         "default_title": "Dejizo Waei Chrome",
-        "default_popup": "popup/popup.html"
+        "default_popup": "./popup/popup.html"
     },
     "permissions": [
-        "http://*/*",
-        "https://*/*"
+        "http://public.dejizo.jp/NetDicV09.asmx/*"
     ]
+
 }
 
