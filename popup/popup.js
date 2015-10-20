@@ -49,13 +49,7 @@ function getSearchResult(xmlData, showResultCallback) {
     }
 }
 
-function lookupWord() {
-    // Cancel the form submit
-    event.preventDefault();
-    var xhr = new XMLHttpRequest();
-
-    searchWord = encodeURIComponent(document.getElementById('searchWordForm').value);
-
+function getSerachURL(searchWord, max_result_words) {
     var getUrl = 'http://public.dejizo.jp/NetDicV09.asmx/SearchDicItemLite';
     var params = 'Dic=EJdict&' +
                  'Word=' + searchWord +
@@ -63,10 +57,21 @@ function lookupWord() {
                  '&Match=EXACT' +
                  '&Merge=AND' +
                  '&Prof=XHTML' +
-                 '&PageSize=' + MAX_RESULT_WORDS +
+                 '&PageSize=' + max_result_words +
                  '&PageIndex=0';
+    return getUrl + '?' + params;
+}
 
-    xhr.open('GET', getUrl + '?' + params, true);
+function lookupWord() {
+    // Cancel the form submit
+    event.preventDefault();
+    var xhr = new XMLHttpRequest();
+
+    searchWord = encodeURIComponent(document.getElementById('searchWordForm').value);
+
+    var searchUrl = getSerachURL(searchWord, MAX_RESULT_WORDS);
+
+    xhr.open('GET', searchUrl, true);
     xhr.onreadystatechange = function() {
         // if the request completed
         if (xhr.readyState == 4) {
