@@ -1,12 +1,20 @@
 var resultDisplay = null;
-var searchWord;
 var MAX_RESULT_WORDS = 5;
 
-function showResultHTMLArray(HTMLArray) {
-    HTMLArray.forEach(function(HTML) {
-        resultDisplay.innerHTML += HTML;
-    });
+function getSerachURL(searchWord, max_result_words) {
+    searchWord = encodeURIComponent(searchWord);
+    var getUrl = 'http://public.dejizo.jp/NetDicV09.asmx/SearchDicItemLite';
+    var params = 'Dic=EJdict&' +
+                 'Word=' + searchWord +
+                 '&Scope=HEADWORD' +
+                 '&Match=EXACT' +
+                 '&Merge=AND' +
+                 '&Prof=XHTML' +
+                 '&PageSize=' + max_result_words +
+                 '&PageIndex=0';
+    return getUrl + '?' + params;
 }
+
 
 function getDictItemURL(itemId) {
     itemId = encodeURIComponent(itemId);
@@ -16,6 +24,12 @@ function getDictItemURL(itemId) {
                  '&Loc=' +
                  '&Prof=XHTML';
     return getUrl + '?' + params;
+}
+
+function showResultHTMLArray(HTMLArray) {
+    HTMLArray.forEach(function(HTML) {
+        resultDisplay.innerHTML += HTML;
+    });
 }
 
 function getResultHTML(itemId) {
@@ -76,24 +90,11 @@ function getSearchResultIds(url) {
     });
 }
 
-function getSerachURL(searchWord, max_result_words) {
-    var getUrl = 'http://public.dejizo.jp/NetDicV09.asmx/SearchDicItemLite';
-    var params = 'Dic=EJdict&' +
-                 'Word=' + searchWord +
-                 '&Scope=HEADWORD' +
-                 '&Match=EXACT' +
-                 '&Merge=AND' +
-                 '&Prof=XHTML' +
-                 '&PageSize=' + max_result_words +
-                 '&PageIndex=0';
-    return getUrl + '?' + params;
-}
-
 function lookupWord() {
     // Cancel the form submit
     event.preventDefault();
     resultDisplay.innerHTML = '';
-    searchWord = encodeURIComponent(document.getElementById('searchWordForm').value);
+    searchWord = document.getElementById('searchWordForm').value;
     var searchUrl = getSerachURL(searchWord, MAX_RESULT_WORDS);
 
     getSearchResultIds(searchUrl)
