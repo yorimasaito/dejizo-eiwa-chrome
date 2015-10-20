@@ -1,61 +1,8 @@
 var resultDisplay = null;
-var searchWord;
 var MAX_RESULT_WORDS = 5;
 
-function getResultFromId(itemId, passResultCallback) {
-    var xhr = new XMLHttpRequest();
-
-    itemId = encodeURIComponent(itemId);
-    var params = 'Dic=EJdict' +
-                 '&Item=' + itemId +
-                 '&Loc=' +
-                 '&Prof=XHTML';
-
-    var getUrl = 'http://public.dejizo.jp/NetDicV09.asmx/GetDicItemLite';
-    xhr.open('GET', getUrl + '?' + params, true);
-    xhr.onreadystatechange = function() {
-        // if the request completed
-        if (xhr.readyState == 4) {
-            if(xhr.status == 200) {
-                var dom = xhr.responseXML;
-                var head = dom.getElementsByTagName('Head');
-                var body = dom.getElementsByTagName('Body');
-                var res = head[0].innerHTML + body[0].innerHTML;
-                passResultCallback(res);
-            } else {
-                passResultCallback(xhr.status);
-            }
-        }
-    };
-    xhr.send(null);
-}
-
-function getSearchResult(xmlData, showResultCallback) {
-    var ids = xmlData.getElementsByTagName('ItemID');
-    var ids_length = ids.length;
-    if (ids_length == 0) {
-        var message = searchWord + ' に一致する情報は見つかりませんでした.';
-        showResultCallback(message);
-    } else if (ids_length == 1){
-        getResultFromId(ids[0].childNodes[0].nodeValue, function(resHTML){
-            showResultCallback(resHTML);
-        });
-    } else {
-        for(var i = 0; i < ids_length; i++) {
-            getResultFromId(ids[i].childNodes[0].nodeValue, function(resHTML){
-                showResultCallback(resHTML);
-            });
-        }
-    }
-}
-
-function lookupWord() {
-    // Cancel the form submit
-    event.preventDefault();
-    var xhr = new XMLHttpRequest();
-
-    searchWord = encodeURIComponent(document.getElementById('searchWordForm').value);
-
+function getSerachURL(searchWord, max_result_words) {
+    searchWord = encodeURIComponent(searchWord);
     var getUrl = 'http://public.dejizo.jp/NetDicV09.asmx/SearchDicItemLite';
     var params = 'Dic=EJdict&' +
                  'Word=' + searchWord +
@@ -63,25 +10,98 @@ function lookupWord() {
                  '&Match=EXACT' +
                  '&Merge=AND' +
                  '&Prof=XHTML' +
-                 '&PageSize=' + MAX_RESULT_WORDS +
+                 '&PageSize=' + max_result_words +
                  '&PageIndex=0';
+    return getUrl + '?' + params;
+}
 
-    xhr.open('GET', getUrl + '?' + params, true);
-    xhr.onreadystatechange = function() {
-        // if the request completed
-        if (xhr.readyState == 4) {
-            resultDisplay.innerHTML = '';
-            if (xhr.status == 200) {
-                // responseXMLは返す単語のIDを持っている
-                getSearchResult(xhr.responseXML, function(responseHTML){
-                    resultDisplay.innerHTML += responseHTML;
-                });
-            } else {
-                resultDisplay.innerHTML = xhr.statusText;
+
+function getDictItemURL(itemId) {
+    itemId = encodeURIComponent(itemId);
+    var getUrl = 'http://public.dejizo.jp/NetDicV09.asmx/GetDicItemLite';
+    var params = 'Dic=EJdict' +
+                 '&Item=' + itemId +
+                 '&Loc=' +
+                 '&Prof=XHTML';
+    return getUrl + '?' + params;
+}
+
+function showResultHTMLArray(HTMLArray) {
+    HTMLArray.forEach(function(HTML) {
+        resultDisplay.innerHTML += HTML;
+    });
+}
+
+function getResultHTML(itemId) {
+    return new Promise(function (resolve, reject) {
+        var xhr = new XMLHttpRequest();
+        var url = getDictItemURL(itemId);
+        xhr.open('GET', url, true);
+        xhr.onreadystatechange = function() {
+            // if the request completed
+            if (xhr.readyState == 4) {
+                if(xhr.status == 200) {
+                    var dom = xhr.responseXML;
+                    var head = dom.getElementsByTagName('Head');
+                    var body = dom.getElementsByTagName('Body');
+                    var res = head[0].innerHTML + body[0].innerHTML;
+                    resolve(res);
+                } else {
+                    reject();
+                }
             }
+        };
+        xhr.send(null);
+    });
+}
+
+function getResultHTMLArrayFromIds(ids) {
+    return new Promise(function (resolve, reject) {
+        if (ids.length == 0) {
+            reject();
         }
-    };
-    xhr.send(null);
+        Promise.all(ids.map(function (id) {
+            return getResultHTML(id);
+        })).then(function(resultHTMLArray) {
+            resolve(resultHTMLArray);
+        });
+    });
+}
+
+function getSearchResultIds(url) {
+    return new Promise(function (resolve, reject) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == 4) {
+                if (xhr.status == 200) {
+                    var ids = [];
+                    var idNodes = xhr.responseXML.getElementsByTagName('ItemID');
+                    for(i = 0; i < idNodes.length; i++) {
+                        ids.push(idNodes[i].childNodes[0].nodeValue);
+                    }
+                    resolve(ids);
+                } else {
+                    reject();
+                }
+            }
+        };
+        xhr.send(null);
+    });
+}
+
+function lookupWord() {
+    // Cancel the form submit
+    event.preventDefault();
+    resultDisplay.innerHTML = '';
+    searchWord = document.getElementById('searchWordForm').value;
+    var searchUrl = getSerachURL(searchWord, MAX_RESULT_WORDS);
+
+    getSearchResultIds(searchUrl)
+        .then(getResultHTMLArrayFromIds)
+        .then(showResultHTMLArray, function(){
+            resultDisplay.innerHTML += searchWord + " に一致する情報は見つかりませんでした.";
+     });
 }
 
 window.addEventListener('load', function(event) {
