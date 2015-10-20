@@ -92,6 +92,7 @@ function getSerachURL(searchWord, max_result_words) {
 function lookupWord() {
     // Cancel the form submit
     event.preventDefault();
+    resultDisplay.innerHTML = '';
     searchWord = encodeURIComponent(document.getElementById('searchWordForm').value);
     var searchUrl = getSerachURL(searchWord, MAX_RESULT_WORDS);
 
