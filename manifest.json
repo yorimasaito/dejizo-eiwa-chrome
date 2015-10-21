@@ -14,7 +14,7 @@
             "19": "./images/icon19.png",
             "38": "./images/icon38.png"
         },
-        "default_title": "Dejizo Waei Chrome",
+        "default_title": "Dejizo Eiwa Chrome",
         "default_popup": "./popup/popup.html"
     },
     "permissions": [
