@@ -90,7 +90,7 @@ function getSearchResultIds(url) {
     });
 }
 
-function lookupWord() {
+function lookup() {
     // Cancel the form submit
     event.preventDefault();
     resultDisplay.innerHTML = '';
@@ -106,5 +106,5 @@ function lookupWord() {
 
 window.addEventListener('load', function(event) {
     resultDisplay = document.getElementById('resultDisplay');
-    document.getElementById('lookup').addEventListener('submit', lookupWord);
+    document.getElementById('lookup').addEventListener('submit', lookup);
 });
